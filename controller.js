@@ -24,7 +24,7 @@ var GameController = {
 		if (isNoLeftBorderCell && isNoTopBorderCell && currentWorldState[cellIndex - width - 1]) numberOfNeighboursAlive++;
 		if (isNoRightBorderCell && isNoTopBorderCell && currentWorldState[cellIndex - width + 1]) numberOfNeighboursAlive++;
 		if (isNoLeftBorderCell && isNoBottomBorderCell && currentWorldState[cellIndex + width - 1]) numberOfNeighboursAlive++;
-		if (isNoBottomBorderCell && isNoBottomBorderCell && currentWorldState[cellIndex + width + 1]) numberOfNeighboursAlive++;
+		if (isNoRightBorderCell && isNoBottomBorderCell && currentWorldState[cellIndex + width + 1]) numberOfNeighboursAlive++;
 
 		return currentWorldState[cellIndex]
 				? numberOfNeighboursAlive == 2 || numberOfNeighboursAlive == 3
