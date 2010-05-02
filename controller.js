@@ -46,19 +46,17 @@ var GameController = {
 		document.body.appendChild(canvas);
 		var ctx = canvas.getContext('2d');
 
-		var worldState;
+		var worldState = GameController.createRandomWorldState(height, width, 0.5);
 
 		setInterval(function() {
-			worldState = worldState
-					? GameController.computeNextWorldState(worldState, width)
-					: GameController.createRandomWorldState(height, width, 0.5);
-
 			for (var i = 0, x = 0, y = 0; i < worldState.length; i++, x += 10) {
 				if (i % width == 0 && i > 0) { x = 0; y += 10; };
 				ctx.fillStyle = worldState[i] ? 'yellow' : 'grey';
 				ctx.fillRect(x, y, 10, 10);
 				ctx.strokeRect(x, y, 10, 10);
 			}
+
+			worldState = GameController.computeNextWorldState(worldState, width);
 		}, 250 /* ms */ );
 	}
 };
