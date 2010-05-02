@@ -1,3 +1,7 @@
+/* Copyright 2010, Rob Schellhorn. All Rights Reserved
+ * Javascript implementation of Conway's Game of Life
+ * http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
+ */
 var GameController = {
 
 	createRandomWorldState: function(height, width, seedProbability) {
@@ -24,24 +28,18 @@ var GameController = {
 		if (isNoLeftBorderCell && isNoBottomBorderCell && currentWorldState[cellIndex + width - 1]) numberOfNeighboursAlive++;
 		if (isNoRightBorderCell && isNoBottomBorderCell && currentWorldState[cellIndex + width + 1]) numberOfNeighboursAlive++;
 
-		return currentWorldState[cellIndex]
-				? numberOfNeighboursAlive == 2 || numberOfNeighboursAlive == 3
-				: numberOfNeighboursAlive == 3;
+		return numberOfNeighboursAlive == 3 || (numberOfNeighboursAlive == 2 && currentWorldState[cellIndex]);
 	},
 
 	computeNextWorldState: function(currentWorldState, width) {
 		var nextWorldState = [];
-		for (var i = 0; i < currentWorldState.length; i++) {
-			nextWorldState.push(GameController.computeNextCellState(currentWorldState, width, i));
+		for (var i = currentWorldState.length; i-- > 0;) {
+			nextWorldState[i] = GameController.computeNextCellState(currentWorldState, width, i);
 		}
 		return nextWorldState;
 	},
 
-	start: function() {
-		var height = 65;
-		var width = 125;
-		var tick = 200; /*ms */
-
+	start: function(height, width) { /* defaults to: */ height |= 65; width |= 125;
 		var canvas = document.createElement('canvas');
 		canvas.setAttribute('height', height * 10);
 		canvas.setAttribute('width', width * 10);
@@ -50,7 +48,7 @@ var GameController = {
 
 		var worldState;
 
-		function next() {
+		setInterval(function() {
 			worldState = worldState
 					? GameController.computeNextWorldState(worldState, width)
 					: GameController.createRandomWorldState(height, width, 0.5);
@@ -61,10 +59,6 @@ var GameController = {
 				ctx.fillRect(x, y, 10, 10);
 				ctx.strokeRect(x, y, 10, 10);
 			}
-
-			setTimeout(next, tick);
-		}
-
-		next();
+		}, 250 /* ms */ );
 	}
 };
