@@ -1,11 +1,9 @@
 var GameController = {
 
-	DEFAULT_OPTIONS: { height: 40, width: 80, seedProbability: 0.5, tick: 200 /*ms*/ },
-
 	createRandomWorldState: function(height, width, seedProbability) {
 		var worldState = [];
-		for (var i = 0; i < height * width; i++) {
-			worldState.push(Math.random() < seedProbability);
+		for (var i = height * width; i-- > 0;) {
+			worldState[i] = Math.random() < seedProbability;
 		}
 		return worldState;
 	},
@@ -34,61 +32,39 @@ var GameController = {
 	computeNextWorldState: function(currentWorldState, width) {
 		var nextWorldState = [];
 		for (var i = 0; i < currentWorldState.length; i++) {
-			nextWorldState.push(this.computeNextCellState(currentWorldState, width, i));
+			nextWorldState.push(GameController.computeNextCellState(currentWorldState, width, i));
 		}
 		return nextWorldState;
 	},
 
-	start: function(options) { options = options || {};
-		Util.extend(options, GameController.DEFAULT_OPTIONS);
+	start: function() {
+		var height = 65;
+		var width = 125;
+		var tick = 200; /*ms */
 
-		var height = options['height'];
-		var width = options['width'];
-		var tick = options['tick'];
+		var canvas = document.createElement('canvas');
+		canvas.setAttribute('height', height * 10);
+		canvas.setAttribute('width', width * 10);
+		document.body.appendChild(canvas);
+		var ctx = canvas.getContext('2d');
 
-		var Display = {
+		var worldState;
 
-			animate: function(currentWorldState) {
-				var nextWorldState;
+		function next() {
+			worldState = worldState
+					? GameController.computeNextWorldState(worldState, width)
+					: GameController.createRandomWorldState(height, width, 0.5);
 
-				if (this.viewPort) {
-					nextWorldState = GameController.computeNextWorldState(currentWorldState, width);
-					this.updateViewPort(currentWorldState, nextWorldState);
-				} else {
-					this.createViewPort(currentWorldState);
-					nextWorldState = currentWorldState;
-				}
-
-				setTimeout(this.animate.bind(this, nextWorldState), tick);
-			},
-
-			createViewPort: function(worldState) {
-				var viewPort = this.viewPort = document.createElement('ol');
-				Util.addClass(viewPort, 'world');
-				for (var i = 0; i < worldState.length; i++) {
-					var cell = document.createElement('li');
-					if (worldState[i]) Util.addClass(cell, 'alive');
-					if (i > 0 && i % width == 0) Util.addClass(cell, 'clear');
-					viewPort.appendChild(cell);
-				}
-				document.body.appendChild(viewPort);
-			},
-
-			updateViewPort: function(currentWorldState, nextWorldState) {
-				for (var i = 0; i < nextWorldState.length; i++) {
-					if (nextWorldState[i] == currentWorldState[i]) continue;
-
-					var cell = this.viewPort.childNodes[i];
-					if (nextWorldState[i]) {
-						Util.addClass(cell, 'alive');
-					} else {
-						Util.removeClass(cell, 'alive');
-					}
-				}
+			for (var i = 0, x = 0, y = 0; i < worldState.length; i++, x += 10) {
+				if (i % width == 0 && i > 0) { x = 0; y += 10; };
+				ctx.fillStyle = worldState[i] ? 'yellow' : 'grey';
+				ctx.fillRect(x, y, 10, 10);
+				ctx.strokeRect(x, y, 10, 10);
 			}
-		};
 
-		var initialWorldState = this.createRandomWorldState(height, width, options['seedProbability']);
-		Display.animate(initialWorldState);
+			setTimeout(next, tick);
+		}
+
+		next();
 	}
 };
