@@ -39,7 +39,7 @@ var GameController = {
 		return nextWorldState;
 	},
 
-	start: function(height, width) { /* defaults to: */ height |= 65; width |= 125;
+	start: function(height, width) { /* defaults to: */ height = height || 65; width = width || 125;
 		var canvas = document.createElement('canvas');
 		canvas.setAttribute('height', height * 10);
 		canvas.setAttribute('width', width * 10);
