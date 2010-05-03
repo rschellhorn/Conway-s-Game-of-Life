@@ -6,7 +6,7 @@ var GameController = {
 
 	createRandomWorldState: function(height, width, seedProbability) {
 		var worldState = [];
-		for (var i = height * width; i-- > 0;) {
+		for (var i = height * width; --i;) {
 			worldState[i] = Math.random() < seedProbability;
 		}
 		return worldState;
@@ -33,7 +33,7 @@ var GameController = {
 
 	computeNextWorldState: function(currentWorldState, width) {
 		var nextWorldState = [];
-		for (var i = currentWorldState.length; i-- > 0;) {
+		for (var i = currentWorldState.length; --i;) {
 			nextWorldState[i] = GameController.computeNextCellState(currentWorldState, width, i);
 		}
 		return nextWorldState;
