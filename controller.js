@@ -53,10 +53,10 @@ var GameController = {
 		}
 
 		setInterval(function() {
-			for (var i = 0, x, y = -10; i < worldState.length; i++, x += 10) {
-				if (i % width == 0) { x = 0; y += 10; };
+			for (var i = 0, x, y = -9; i < worldState.length; i++, x += 10) {
+				if (i % width == 0) { x = 1; y += 10; };
 				ctx.fillStyle = worldState[i] ? '#fff944' : '#929292';
-				ctx.fillRect(x + 1, y + 1, 8, 8);
+				ctx.fillRect(x, y , 8, 8);
 			}
 
 			worldState = GameController.computeNextWorldState(worldState, width);
